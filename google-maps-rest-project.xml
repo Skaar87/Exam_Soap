@@ -37,6 +37,24 @@ log.info(singlelng)
 
 com.eviware.soapui.SoapUI.globalProperties.setPropertyValue("singlelng", singlelng)</script></con:config></con:testStep><con:testStep type="restrequest" name="Get - ViewPort Biasing Sample" id="8eceab0a-e3df-4b16-85c4-c6f4f7ac09ae"><con:settings/><con:config service="Geocoding API" resourcePath="/maps/api/geocode/{format}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Get - ViewPort Biasing Sample" mediaType="application/xml" id="9a3f9904-61f8-4dde-84ec-229eb0b0b777"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://maps.googleapis.com</con:endpoint><con:request/><con:originalUri>http://maps.googleapis.com/maps/api/geocode/json</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="240d205b-f839-48cb-9c0c-da800310068b" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple NotContains" id="9df49c42-58b2-4819-84c4-b9e1f6063e59" name="Not Contains"><con:configuration><token>Stockholm</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="sensor" value="false"/>
-  <con:entry key="bounds" value="34.172684,-118.604794|34.236144,-118.500938"/>
+  <con:entry key="bounds" value="${norlat},${norlng}|34.236144,-118.500938"/>
   <con:entry key="address" value="Winnetka"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:requirements/><con:properties><con:property><con:name>PlacesAPIKey</con:name><con:value/></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:parameters/></con:reporting><con:sensitiveInformation/></con:soapui-project>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="FetchResponse_Reverse" id="e7b767ea-b364-419d-9970-fd244559830d"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+
+def responseContent = testRunner.testCase.getTestStepByName("Get - Reverse Lookup Sample").getPropertyValue("response")
+def response = new JsonSlurper().parseText(responseContent)
+log.info(response)
+
+def norlat = new JsonOutput().toJson(response.results.geometry.location.lat.get(0));
+
+log.info(norlat)
+
+com.eviware.soapui.SoapUI.globalProperties.setPropertyValue('norlat', norlat);
+
+def norlng = new JsonOutput().toJson(response.results.geometry.location.lng.get(0));
+
+log.info(norlng)
+
+com.eviware.soapui.SoapUI.globalProperties.setPropertyValue('norng', norlng);</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:requirements/><con:properties><con:property><con:name>PlacesAPIKey</con:name><con:value/></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:parameters/></con:reporting><con:sensitiveInformation/></con:soapui-project>
